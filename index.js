@@ -37,13 +37,43 @@
 
 // Async et Await "sucres syntaxiques"
 
-async function direBonjour() {
-  const promesse = new Promise((resolve, reject) => {
-    setTimeout(() => resolve("Promesse tenu !"), 3000);
-  });
+// async function direBonjour() {
+//   const promesse = new Promise((resolve, reject) => {
+//     setTimeout(() => resolve("Promesse tenu !"), 3000);
+//   });
 
-  let resultat = await promesse;
-  console.log(resultat);
+//   let resultat = await promesse;
+//   console.log(resultat);
+// }
+
+// direBonjour();
+
+function chargerScript(script) {
+  return new Promise((resolve, reject) => {
+    // créer un élément
+    let element = document.createElement("script");
+    element.src = script;
+    document.head.append(element);
+
+    // resolve()
+    element.onload = () => resolve("Fichier " + script + " a été charger");
+
+    // reject()
+    element.onerror = () =>
+      reject(new Error("Le script " + script + " n'a pu être chargé"));
+  });
 }
 
-direBonjour();
+async function resultat() {
+  try {
+    const scriptA = await chargerScript("test.js");
+    console.log(scriptA);
+    const scriptB = await chargerScript("B.js");
+    console.log(scriptB);
+  } catch (error) {
+    console.log(error);
+    document.head.lastChild.remove();
+  }
+}
+
+resultat();
